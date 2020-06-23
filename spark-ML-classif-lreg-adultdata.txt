@@ -101,18 +101,18 @@ val lpoints = va.transform(dfhot).select("features", "income").
 
 
 val splits = lpoints.randomSplit(Array(0.8, 0.2))
-val adulttrain = splits(0).cache()
-val adultvalid = splits(1).cache()
+val trainSet = splits(0).cache()
+val testSet = splits(1).cache()
 
 
 import org.apache.spark.ml.classification.LogisticRegression
 
 val lr = new LogisticRegression
 lr.setRegParam(0.01).setMaxIter(500).setFitIntercept(true)
-val lrmodel = lr.fit(adulttrain)
+val lrmodel = lr.fit(trainSet)
 
 
-val validpredicts = lrmodel.transform(adultvalid)
+val validpredicts = lrmodel.transform(testSet)
 
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 val bceval = new BinaryClassificationEvaluator()

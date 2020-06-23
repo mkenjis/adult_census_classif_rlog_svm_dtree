@@ -48,15 +48,15 @@ val data = vect.map(r => {
 data.cache
 
 val sets = data.randomSplit(Array(0.8,0.2))
-val adultTrain = sets(0)
-val adultTest = sets(1)
+val trainSet = sets(0)
+val testSet = sets(1)
 
 ---- MLlib logistic regression --------------
 import org.apache.spark.mllib.classification.LogisticRegressionWithSGD
 val numIterations = 100
-val lrModel = LogisticRegressionWithSGD.train(adultTrain, numIterations)
+val lrModel = LogisticRegressionWithSGD.train(trainSet, numIterations)
 
-val validPredicts = adultTest.map(x => (lrModel.predict(x.features),x.label))
+val validPredicts = testSet.map(x => (lrModel.predict(x.features),x.label))
 
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 val metrics = new BinaryClassificationMetrics(validPredicts)
@@ -70,9 +70,9 @@ metrics.areaUnderROC  // 0.5003113325031133
 
 import org.apache.spark.mllib.classification.SVMWithSGD
 val numIterations = 100
-val lrModel = SVMWithSGD.train(adultTrain, numIterations)
+val lrModel = SVMWithSGD.train(trainSet, numIterations)
 
-val validPredicts = adultTest.map(x => (lrModel.predict(x.features),x.label))
+val validPredicts = testSet.map(x => (lrModel.predict(x.features),x.label))
 
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 val metrics = new BinaryClassificationMetrics(validPredicts)
@@ -85,9 +85,9 @@ metrics.areaUnderROC  // 0.5787969477837254
 ---- MLlib Maive Bayes regression --------------
 
 import org.apache.spark.mllib.classification.NaiveBayes
-val lrModel = NaiveBayes.train(adultTrain)
+val lrModel = NaiveBayes.train(trainSet)
 
-val validPredicts = adultTest.map(x => (lrModel.predict(x.features),x.label))
+val validPredicts = testSet.map(x => (lrModel.predict(x.features),x.label))
 
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 val metrics = new BinaryClassificationMetrics(validPredicts)
@@ -101,15 +101,15 @@ metrics.areaUnderROC  //  0.5958648650825371
 ----- Standardizing features ------------------------------
 ----- with MLlib logistic regression ----------------------
 import org.apache.spark.mllib.feature.StandardScaler
-val vectors = adultTrain.map(lp => lp.features)
+val vectors = trainSet.map(lp => lp.features)
 val scaler = new StandardScaler(withMean = true, withStd = true).fit(vectors)
-val scaledadultTrain = adultTrain.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
+val scaledtrainSet = trainSet.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
 
 import org.apache.spark.mllib.classification.LogisticRegressionWithSGD
 val numIterations = 100
-val lrModel = LogisticRegressionWithSGD.train(scaledadultTrain, numIterations)
+val lrModel = LogisticRegressionWithSGD.train(scaledtrainSet, numIterations)
 
-val validPredicts = adultTest.map(x => (lrModel.predict(scaler.transform(x.features)),x.label))
+val validPredicts = testSet.map(x => (lrModel.predict(scaler.transform(x.features)),x.label))
 
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 val metrics = new BinaryClassificationMetrics(validPredicts)
@@ -121,15 +121,15 @@ metrics.areaUnderROC   // 0.8140730848646596
 
 ----- with MLlib SVM regression ----------------------
 import org.apache.spark.mllib.feature.StandardScaler
-val vectors = adultTrain.map(lp => lp.features)
+val vectors = trainSet.map(lp => lp.features)
 val scaler = new StandardScaler(withMean = true, withStd = true).fit(vectors)
-val scaledadultTrain = adultTrain.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
+val scaledtrainSet = trainSet.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
 
 import org.apache.spark.mllib.classification.SVMWithSGD
 val numIterations = 100
-val lrModel = SVMWithSGD.train(scaledadultTrain, numIterations)
+val lrModel = SVMWithSGD.train(scaledtrainSet, numIterations)
 
-val validPredicts = adultTest.map(x => (lrModel.predict(scaler.transform(x.features)),x.label))
+val validPredicts = testSet.map(x => (lrModel.predict(scaler.transform(x.features)),x.label))
 
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 val metrics = new BinaryClassificationMetrics(validPredicts)
