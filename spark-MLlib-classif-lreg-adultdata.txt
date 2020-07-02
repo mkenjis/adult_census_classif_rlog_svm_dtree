@@ -54,15 +54,15 @@ val testSet = sets(1)
 ---- MLlib logistic regression --------------
 import org.apache.spark.mllib.classification.LogisticRegressionWithSGD
 val numIterations = 100
-val lrModel = LogisticRegressionWithSGD.train(trainSet, numIterations)
+val model = LogisticRegressionWithSGD.train(trainSet, numIterations)
 
-val validPredicts = testSet.map(x => (lrModel.predict(x.features),x.label))
+val validPredicts = testSet.map(x => (model.predict(x.features),x.label))
 
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 val metrics = new BinaryClassificationMetrics(validPredicts)
 validPredicts.filter(x => x._1 == x._2).count  // 4949
 validPredicts.count                            // 6554
-lrModel.getClass.getSimpleName
+model.getClass.getSimpleName
 metrics.areaUnderPR   // 0.6227556413221551
 metrics.areaUnderROC  // 0.5003113325031133
 
@@ -70,30 +70,30 @@ metrics.areaUnderROC  // 0.5003113325031133
 
 import org.apache.spark.mllib.classification.SVMWithSGD
 val numIterations = 100
-val lrModel = SVMWithSGD.train(trainSet, numIterations)
+val model = SVMWithSGD.train(trainSet, numIterations)
 
-val validPredicts = testSet.map(x => (lrModel.predict(x.features),x.label))
+val validPredicts = testSet.map(x => (model.predict(x.features),x.label))
 
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 val metrics = new BinaryClassificationMetrics(validPredicts)
 validPredicts.filter(x => x._1 == x._2).count  // 5168
 validPredicts.count                            // 6554
-lrModel.getClass.getSimpleName
+model.getClass.getSimpleName
 metrics.areaUnderPR   // 0.5957985632008835
 metrics.areaUnderROC  // 0.5787969477837254
 
 ---- MLlib Maive Bayes regression --------------
 
 import org.apache.spark.mllib.classification.NaiveBayes
-val lrModel = NaiveBayes.train(trainSet)
+val model = NaiveBayes.train(trainSet)
 
-val validPredicts = testSet.map(x => (lrModel.predict(x.features),x.label))
+val validPredicts = testSet.map(x => (model.predict(x.features),x.label))
 
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 val metrics = new BinaryClassificationMetrics(validPredicts)
 validPredicts.filter(x => x._1 == x._2).count  // 5108
 validPredicts.count                            // 6554
-lrModel.getClass.getSimpleName
+model.getClass.getSimpleName
 metrics.areaUnderPR   //  0.4852793858100803
 metrics.areaUnderROC  //  0.5958648650825371
 
@@ -103,19 +103,19 @@ metrics.areaUnderROC  //  0.5958648650825371
 import org.apache.spark.mllib.feature.StandardScaler
 val vectors = trainSet.map(lp => lp.features)
 val scaler = new StandardScaler(withMean = true, withStd = true).fit(vectors)
-val scaledtrainSet = trainSet.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
+val scaledTrain = trainSet.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
 
 import org.apache.spark.mllib.classification.LogisticRegressionWithSGD
 val numIterations = 100
-val lrModel = LogisticRegressionWithSGD.train(scaledtrainSet, numIterations)
+val model = LogisticRegressionWithSGD.train(scaledTrain, numIterations)
 
-val validPredicts = testSet.map(x => (lrModel.predict(scaler.transform(x.features)),x.label))
+val validPredicts = testSet.map(x => (model.predict(scaler.transform(x.features)),x.label))
 
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 val metrics = new BinaryClassificationMetrics(validPredicts)
 validPredicts.filter(x => x._1 == x._2).count  // 4918
 validPredicts.count                            // 6554
-lrModel.getClass.getSimpleName
+model.getClass.getSimpleName
 metrics.areaUnderPR    // 0.4874468156388327
 metrics.areaUnderROC   // 0.8140730848646596
 
@@ -123,19 +123,19 @@ metrics.areaUnderROC   // 0.8140730848646596
 import org.apache.spark.mllib.feature.StandardScaler
 val vectors = trainSet.map(lp => lp.features)
 val scaler = new StandardScaler(withMean = true, withStd = true).fit(vectors)
-val scaledtrainSet = trainSet.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
+val scaledTrain = trainSet.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
 
 import org.apache.spark.mllib.classification.SVMWithSGD
 val numIterations = 100
-val lrModel = SVMWithSGD.train(scaledtrainSet, numIterations)
+val model = SVMWithSGD.train(scaledTrain, numIterations)
 
-val validPredicts = testSet.map(x => (lrModel.predict(scaler.transform(x.features)),x.label))
+val validPredicts = testSet.map(x => (model.predict(scaler.transform(x.features)),x.label))
 
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 val metrics = new BinaryClassificationMetrics(validPredicts)
 validPredicts.filter(x => x._1 == x._2).count  // 4869
 validPredicts.count                            // 6554
-lrModel.getClass.getSimpleName
+model.getClass.getSimpleName
 metrics.areaUnderPR    // 0.47608954747815296
 metrics.areaUnderROC   // 0.7996589185058858
 
