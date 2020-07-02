@@ -103,11 +103,11 @@ metrics.areaUnderROC  //  0.5958648650825371
 import org.apache.spark.mllib.feature.StandardScaler
 val vectors = trainSet.map(lp => lp.features)
 val scaler = new StandardScaler(withMean = true, withStd = true).fit(vectors)
-val scaledTrain = trainSet.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
+val trainScaled = trainSet.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
 
 import org.apache.spark.mllib.classification.LogisticRegressionWithSGD
 val numIterations = 100
-val model = LogisticRegressionWithSGD.train(scaledTrain, numIterations)
+val model = LogisticRegressionWithSGD.train(trainScaled, numIterations)
 
 val validPredicts = testSet.map(x => (model.predict(scaler.transform(x.features)),x.label))
 
@@ -123,11 +123,11 @@ metrics.areaUnderROC   // 0.8140730848646596
 import org.apache.spark.mllib.feature.StandardScaler
 val vectors = trainSet.map(lp => lp.features)
 val scaler = new StandardScaler(withMean = true, withStd = true).fit(vectors)
-val scaledTrain = trainSet.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
+val trainScaled = trainSet.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
 
 import org.apache.spark.mllib.classification.SVMWithSGD
 val numIterations = 100
-val model = SVMWithSGD.train(scaledTrain, numIterations)
+val model = SVMWithSGD.train(trainScaled, numIterations)
 
 val validPredicts = testSet.map(x => (model.predict(scaler.transform(x.features)),x.label))
 
