@@ -1,7 +1,7 @@
 # adult_data_regression
 adult data regression using MLlib and ML
-Source : UCI Machine Learning Repository 
-URL : http://archive.ics.uci.edu/ml/datasets/Adult
+- Source : UCI Machine Learning Repository 
+- URL : http://archive.ics.uci.edu/ml/datasets/Adult
 
 # Purpose: 
 - use adult dataset to train different classification regression models from MLlib and ML.
