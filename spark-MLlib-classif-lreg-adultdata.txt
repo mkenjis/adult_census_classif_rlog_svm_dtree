@@ -1,7 +1,9 @@
-val dfraw = sc.textFile("adultdata/adult.data1").map(x => x.split(","))
+---- Feature extraction & Data Munging --------------
 
-val rdd = dfraw.map(x => Array(x(0),x(1).replace("?","Private"),x(2),x(3),x(4),x(5).replace("?","Prof-specialty"),
-                               x(6),x(7),x(8),x(9),x(10),x(11),x(12),x(13).replace("?","United-States"),x(14)))
+val raw = sc.textFile("adultdata/adult.data1").map(x => x.split(","))
+
+val rdd = raw.map(x => Array(x(0),x(1).replace("?","Private"),x(2),x(3),x(4),x(5).replace("?","Prof-specialty"),
+                             x(6),x(7),x(8),x(9),x(10),x(11),x(12),x(13).replace("?","United-States"),x(14)))
 
 
 def oneHotEncColumns(rddx: org.apache.spark.rdd.RDD[Array[String]], idx: Int):org.apache.spark.rdd.RDD[Array[Double]] = {
@@ -52,6 +54,7 @@ val trainSet = sets(0)
 val testSet = sets(1)
 
 ---- MLlib logistic regression --------------
+
 import org.apache.spark.mllib.classification.LogisticRegressionWithSGD
 val numIterations = 100
 val model = LogisticRegressionWithSGD.train(trainSet, numIterations)
@@ -82,7 +85,7 @@ model.getClass.getSimpleName
 metrics.areaUnderPR   // 0.5957985632008835
 metrics.areaUnderROC  // 0.5787969477837254
 
----- MLlib Maive Bayes regression --------------
+---- MLlib Naive Bayes regression --------------
 
 import org.apache.spark.mllib.classification.NaiveBayes
 val model = NaiveBayes.train(trainSet)
@@ -97,13 +100,14 @@ model.getClass.getSimpleName
 metrics.areaUnderPR   //  0.4852793858100803
 metrics.areaUnderROC  //  0.5958648650825371
 
-
 ----- Standardizing features ------------------------------
------ with MLlib logistic regression ----------------------
+
 import org.apache.spark.mllib.feature.StandardScaler
 val vectors = trainSet.map(lp => lp.features)
 val scaler = new StandardScaler(withMean = true, withStd = true).fit(vectors)
 val trainScaled = trainSet.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
+
+----- with MLlib logistic regression ----------------------
 
 import org.apache.spark.mllib.classification.LogisticRegressionWithSGD
 val numIterations = 100
@@ -120,10 +124,6 @@ metrics.areaUnderPR    // 0.4874468156388327
 metrics.areaUnderROC   // 0.8140730848646596
 
 ----- with MLlib SVM regression ----------------------
-import org.apache.spark.mllib.feature.StandardScaler
-val vectors = trainSet.map(lp => lp.features)
-val scaler = new StandardScaler(withMean = true, withStd = true).fit(vectors)
-val trainScaled = trainSet.map(lp => LabeledPoint(lp.label,scaler.transform(lp.features)))
 
 import org.apache.spark.mllib.classification.SVMWithSGD
 val numIterations = 100
@@ -139,6 +139,6 @@ model.getClass.getSimpleName
 metrics.areaUnderPR    // 0.47608954747815296
 metrics.areaUnderROC   // 0.7996589185058858
 
------ with Maive Bayes regression ----------------------
+----- with Naive Bayes regression ----------------------
 
 not possible because standardization produces negative values
