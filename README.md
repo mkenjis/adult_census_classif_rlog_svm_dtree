@@ -1,4 +1,4 @@
-# adult_data_regression
+# adult_census_data_classif_rlog_svm
 adult data regression using MLlib and ML
 - Source : UCI Machine Learning Repository 
 - URL : http://archive.ics.uci.edu/ml/datasets/Adult
