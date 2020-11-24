@@ -224,8 +224,6 @@ trainSet.cache
 import org.apache.spark.mllib.tree.DecisionTree
 import org.apache.spark.mllib.tree.model.DecisionTreeModel
 
-  val y = Array(x(0),categ_workclass(x(1)),x(2),categ_education(x(3)),categ_marital(x(5)),categ_occupation(x(6)),categ_relatship(x(7)),categ_race(x(8)),categ_sex(x(9)),x(10),x(11),x(12))
-
 val categoricalFeaturesInfo = Map[Int, Int]( 1->8, 3->16, 4->7, 5->14, 6->6, 7->5, 8->2, 12->41)
 
 val model = DecisionTree.trainClassifier(trainSet, 2, categoricalFeaturesInfo, "gini", 30, 42)
